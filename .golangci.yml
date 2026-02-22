@@ -1,22 +1,5 @@
+version: '2'
 linters:
-  enable-all: true
+  default: all
   disable:
-    - scopelint # deprecated
-    - interfacer # deprecated
-    - maligned # deprecated
-    - golint # deprecated
-    - deadcode #deprecated
-    - nosnakecase #deprecated
-    - structcheck #deprecated
-    - varcheck #deprecated
-    - exhaustivestruct #deprecated
-    - ifshort #deprecated
-linters-settings:
-  varnamelen:
-    min-name-length: 1
-issues:
-  exclude-use-default: false
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - funlen
+    - wsl
