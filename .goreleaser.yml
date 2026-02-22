@@ -31,6 +31,9 @@ changelog:
     - title: Features
       regexp: "^.*feat:.*$"
       order: 0
+    - title: Updates
+      regexp: "^.*update:.*$"
+      order: 0
     - title: Bug Fixes
       regexp: "^.*fix:.*$"
       order: 0
