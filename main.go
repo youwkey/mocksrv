@@ -30,6 +30,7 @@ type flags struct {
 
 type options struct {
 	flags
+
 	addr string
 }
 
@@ -105,7 +106,8 @@ func main() {
 	slog.Info("root dir mounted.", "dir", opts.rootDir)
 	slog.Info("server started.", "address", "http://localhost:"+opts.port)
 
-	if err := server.ListenAndServe(); err != nil {
+	err := server.ListenAndServe()
+	if err != nil {
 		slog.Error(err.Error())
 	}
 }

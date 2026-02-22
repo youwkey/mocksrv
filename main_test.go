@@ -49,16 +49,20 @@ func TestParseOptions(t *testing.T) {
 			t.Cleanup(func() {
 				// reset flags
 				for k := range test.flags {
-					if err := flag.CommandLine.Set(k, flag.Lookup(k).DefValue); err != nil {
+					err := flag.CommandLine.Set(k, flag.Lookup(k).DefValue)
+					if err != nil {
 						t.Fatal(err)
 					}
 				}
 			})
+
 			for k, v := range test.flags {
-				if err := flag.CommandLine.Set(k, v); err != nil {
+				err := flag.CommandLine.Set(k, v)
+				if err != nil {
 					t.Fatal(err)
 				}
 			}
+
 			got := parseOptions()
 			if !reflect.DeepEqual(got, test.want) {
 				t.Errorf("got: %+v want: %+v", got, test.want)
@@ -67,10 +71,12 @@ func TestParseOptions(t *testing.T) {
 	}
 }
 
+//nolint:funlen
 func TestBuildHandler(t *testing.T) {
 	t.Parallel()
 
 	const rootDir = "./testdata/static"
+
 	handler := buildHandler(rootDir)
 	testServer := httptest.NewServer(handler)
 	client := new(http.Client)
@@ -92,21 +98,39 @@ func TestBuildHandler(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			//nolint:noctx
-			res, _ := client.Get(testServer.URL + "/" + test.filename)
+
+			req, err := http.NewRequestWithContext(
+				t.Context(),
+				http.MethodGet,
+				testServer.URL+"/"+test.filename,
+				nil,
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			//nolint:gosec
+			res, err := client.Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+
 			t.Cleanup(func() {
 				_ = res.Body.Close()
 			})
+
 			if res.StatusCode != test.status {
 				t.Fatalf("statusCode mismatched: got: %d want %d", res.StatusCode, test.status)
 			}
+
 			if test.ignoreContent {
 				return
 			}
+
 			want, _ := os.ReadFile(filepath.Join(rootDir, test.filename))
+
 			got, _ := io.ReadAll(res.Body)
 			if !bytes.Equal(got, want) {
 				t.Errorf("content mismatched: %s", test.filename)

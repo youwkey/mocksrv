@@ -1,6 +1,6 @@
 # Dependency tool versions
-GOTESTSUM_VERSION := 1.11.0
-GOLANGCLI_VERSION := 1.55.0
+GOTESTSUM_VERSION := v1.13.0
+GOLANGCLI_VERSION := v2.10.1
 
 BUILD_DIR := build
 
@@ -20,5 +20,5 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 tools:
-	go install gotest.tools/gotestsum@v$(GOTESTSUM_VERSION)
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v$(GOLANGCLI_VERSION)
+	go install gotest.tools/gotestsum@$(GOTESTSUM_VERSION)
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCLI_VERSION)
